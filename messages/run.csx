@@ -1,5 +1,4 @@
 #r "Newtonsoft.Json"
-#r "Microsoft.ApplicationInsights"
 #load "BasicLuisDialog.csx"
 
 using System;
