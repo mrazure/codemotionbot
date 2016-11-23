@@ -143,16 +143,17 @@ public class BasicLuisDialog : LuisDialog<object>
             
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
             await context.PostAsync(msg);
-
-            roundNumber = 0;
-           await context.PostAsync($"Partita terminata, digita avvia partita per un nuovo incontro");
-
+             
             var newmsg = context.MakeMessage();
 
             newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_win.png", "You_win.png"));
             await context.PostAsync(newmsg);
+
+            roundNumber = 0;
+            await context.PostAsync($"Partita terminata, digita avvia partita per un nuovo incontro");
+
         }
-        
-          context.Wait(MessageReceived);
+
+        context.Wait(MessageReceived);
     }
 }
