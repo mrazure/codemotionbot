@@ -4,7 +4,7 @@ using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
- 
+using Microsoft.ApplicationInsights;
 
 // For more information about this template visit http://aka.ms/azurebots-csharp-luis
 [Serializable]
@@ -27,9 +27,9 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("Welcome")]
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
-        //TelemetryClient telemetry = new TelemetryClient();
-        //telemetry.trackEvent("WelcomeGame");
-        //telemetry.Flush();
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.trackEvent("Welcome Game");
+        telemetry.Flush();
         var msg = context.MakeMessage();
         // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
         msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
@@ -41,28 +41,38 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("Regole")]
     public async Task Regole(IDialogContext context, LuisResult result)
     {
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.trackEvent("Regole");
+        telemetry.Flush();
         await context.PostAsync($"Le regole sono semplici, la carta vince sul sasso, la forbice vince su carta e il sasso vince sulle forbici, per iniziare scrivi partita"); //
         context.Wait(MessageReceived);
     }
      [LuisIntent("Partita")]
     public async Task Partita(IDialogContext context, LuisResult result)
     {
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.trackEvent("Partita");
+        telemetry.Flush();
         await context.PostAsync($"Iniziamo la partita che è composta da 3 round, vince chi se ne aggiudica 2. Inizia scrivendo avvia partita"); //
         context.Wait(MessageReceived);
     }
     [LuisIntent("AvviaPartita")]
     public async Task AvviaPartita(IDialogContext context, LuisResult result)
     {
-
-         roundNumber = 1;
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.trackEvent("Avvia Partita");
+        telemetry.Flush();
+        roundNumber = 1;
         await context.PostAsync($"Primo round, fai la tua mossa");
         context.Wait(MessageReceived);
     }
      [LuisIntent("Mossa")]
     public async Task Mossa(IDialogContext context, LuisResult result)
     {
-        
-       
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.trackEvent("Mossa");
+        telemetry.Flush();
+
         if (roundNumber  == 1)
         {
               roundNumber = 2;
