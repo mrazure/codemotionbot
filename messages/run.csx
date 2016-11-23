@@ -31,6 +31,8 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     
         if (activity != null)
         {
+            telemetry.TrackEvent("New Activity - Type :" + activity.GetActivityType().ToString());
+            telemetry.Flush();
             // one of these will have an interface and process it
             switch (activity.GetActivityType())
             {
@@ -46,14 +48,13 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
                         var newMembers = update.MembersAdded?.Where(t => t.Id != activity.Recipient.Id);
                         foreach (var newMember in newMembers)
                         {
-                            reply.Text = "";
+                            reply.Text = "Ciao";
                             if (!string.IsNullOrEmpty(newMember.Name))
                             {
                                 reply.Text += $" {newMember.Name}";
                             }
-                            telemetry.TrackEvent("NewGame");
-                            telemetry.Flush();
-                            reply.Text += "Ciao!";
+                           
+                            reply.Text += "!";
                             await client.Conversations.ReplyToActivityAsync(reply);
                         }
                     }
