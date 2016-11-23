@@ -19,7 +19,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     using (BotService.Initialize())
     {
         // Deserialize the incoming activity
-         TelemetryClient telemetry = new TelemetryClient();
+        Microsoft.ApplicationInsights.TelemetryClient telemetry = new Microsoft.ApplicationInsights.TelemetryClient();
          string jsonContent = await req.Content.ReadAsStringAsync();
         var activity = JsonConvert.DeserializeObject<Activity>(jsonContent);
         

@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.ApplicationInsights;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
@@ -28,9 +27,9 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("Welcome")]
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
-        TelemetryClient telemetry = new TelemetryClient();
-        telemetry.trackEvent("WelcomeGame");
-        telemetry.Flush();
+        //TelemetryClient telemetry = new TelemetryClient();
+        //telemetry.trackEvent("WelcomeGame");
+        //telemetry.Flush();
         var msg = context.MakeMessage();
         // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
         msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
