@@ -76,7 +76,43 @@ public class BasicLuisDialog : LuisDialog<object>
         telemetry.TrackEvent("Mossa");
         telemetry.Flush();
 
-        if (roundNumber  == 1)
+        EntityRecommendation tipomossa;
+        if (!result.TryFindEntity("tipomossa", out tipomossa))
+        {
+            tipomossa = new EntityRecommendation(type: "tipomossa") { Entity = "" };
+        }
+        if (tipomossa.Entity == "")
+        {
+            await context.PostAsync($"Non ho capito la tua mossa,digita ad esempio lancio sasso"); //
+            context.Wait(MessageReceived);
+            return;
+        }
+        if (tipomossa.Entity == "carta")
+        {
+            var msg = context.MakeMessage();
+            // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_paper.png", "Hands_Human_paper.png"));
+            await context.PostAsync(msg);
+        }
+        else if (tipomossa.Entity == "forbice")
+        {
+            var msg = context.MakeMessage();
+            // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_scissors.png", "Hands_Human_scissors.png"));
+            await context.PostAsync(msg);
+
+        }
+        else
+        {
+
+            var msg = context.MakeMessage();
+            // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_rock.png", "Hands_Human_rock.png"));
+            await context.PostAsync(msg);
+
+        }
+
+            if (roundNumber  == 1)
         {
               roundNumber = 2;
            await context.PostAsync($"Secondo round, fai la tua mossa"); 
