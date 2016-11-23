@@ -130,7 +130,7 @@ public class BasicLuisDialog : LuisDialog<object>
         {
             var msg = context.MakeMessage();
  
-            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Paper_scissors.png", "Hands_Robot_paper.png"));
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_paper.png", "Hands_Robot_paper.png"));
             await context.PostAsync(msg);
 
             roundNumber = 3;
@@ -145,9 +145,12 @@ public class BasicLuisDialog : LuisDialog<object>
             await context.PostAsync(msg);
 
             roundNumber = 0;
-           await context.PostAsync($"Partita terminata, digita avvia partita per un nuovo incontro"); 
-        
-            
+           await context.PostAsync($"Partita terminata, digita avvia partita per un nuovo incontro");
+
+            var newmsg = context.MakeMessage();
+
+            newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_win.png", "You_win.png"));
+            await context.PostAsync(newmsg);
         }
         
           context.Wait(MessageReceived);
