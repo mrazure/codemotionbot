@@ -27,12 +27,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "messages", "messages", "{F4
 	ProjectSection(SolutionItems) = preProject
 		messages\BasicLuisDialog.csx = messages\BasicLuisDialog.csx
 		messages\function.json = messages\function.json
+		images\paper.png = images\paper.png
 		messages\project.json = messages\project.json
 		messages\project.lock.json = messages\project.lock.json
 		messages\run.csx = messages\run.csx
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot Application1", "Bot Application1\Bot Application1.csproj", "{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{4F60BFA5-8EC4-4473-9C43-EE54E9E665FB}"
+	ProjectSection(SolutionItems) = preProject
+		images\paper.png = images\paper.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,5 +66,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F4D9DF3B-F4E4-4E19-9053-3AF71A3189FA} = {36665A78-4D93-48C7-B432-4DA46AA140D5}
+		{4F60BFA5-8EC4-4473-9C43-EE54E9E665FB} = {36665A78-4D93-48C7-B432-4DA46AA140D5}
 	EndGlobalSection
 EndGlobal

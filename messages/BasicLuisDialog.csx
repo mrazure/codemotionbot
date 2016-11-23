@@ -29,10 +29,10 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
         
-      //  await context.PostAsync($"![duck](http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png)"); //
-        
+          
         var msg = context.MakeMessage();
-        msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
+        // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
+        msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://codemotionbot.azurewebsites.net/images/paper.png", "paper.png"));
         await context.PostAsync(msg);
         await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
         context.Wait(MessageReceived);
