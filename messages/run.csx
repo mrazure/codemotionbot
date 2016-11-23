@@ -52,7 +52,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
                             {
                                 reply.Text += $" {newMember.Name}";
                             }
-                            telemetry.trackEvent("NewGame");
+                            telemetry.TrackEvent("NewGame");
                             telemetry.Flush();
                             reply.Text += "Ciao!";
                             await client.Conversations.ReplyToActivityAsync(reply);
