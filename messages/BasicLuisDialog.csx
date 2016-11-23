@@ -19,6 +19,9 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("")]
     public async Task None(IDialogContext context, LuisResult result)
     {
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.TrackEvent("Misunderstand");
+        telemetry.Flush();
         await context.PostAsync($"Non ho capito cosa hai detto. Hai detto : {result.Query}"); //
         context.Wait(MessageReceived);
     }
@@ -28,7 +31,7 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
-        telemetry.trackEvent("Welcome Game");
+        telemetry.TrackEvent("Welcome Game");
         telemetry.Flush();
         var msg = context.MakeMessage();
         // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
@@ -42,7 +45,7 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task Regole(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
-        telemetry.trackEvent("Regole");
+        telemetry.TrackEvent("Regole");
         telemetry.Flush();
         await context.PostAsync($"Le regole sono semplici, la carta vince sul sasso, la forbice vince su carta e il sasso vince sulle forbici, per iniziare scrivi partita"); //
         context.Wait(MessageReceived);
@@ -51,7 +54,7 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task Partita(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
-        telemetry.trackEvent("Partita");
+        telemetry.TrackEvent("Partita");
         telemetry.Flush();
         await context.PostAsync($"Iniziamo la partita che è composta da 3 round, vince chi se ne aggiudica 2. Inizia scrivendo avvia partita"); //
         context.Wait(MessageReceived);
@@ -60,7 +63,7 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task AvviaPartita(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
-        telemetry.trackEvent("Avvia Partita");
+        telemetry.TrackEvent("Avvia Partita");
         telemetry.Flush();
         roundNumber = 1;
         await context.PostAsync($"Primo round, fai la tua mossa");
@@ -70,7 +73,7 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task Mossa(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
-        telemetry.trackEvent("Mossa");
+        telemetry.TrackEvent("Mossa");
         telemetry.Flush();
 
         if (roundNumber  == 1)
