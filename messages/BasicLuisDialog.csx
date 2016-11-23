@@ -114,20 +114,37 @@ public class BasicLuisDialog : LuisDialog<object>
 
             if (roundNumber  == 1)
         {
-              roundNumber = 2;
+            // da togliere
+
+            var msg = context.MakeMessage();
+        
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
+            await context.PostAsync(msg);
+
+            roundNumber = 2;
            await context.PostAsync($"Secondo round, fai la tua mossa"); 
            
         }
         else if(  roundNumber == 2)
        
         {
-             roundNumber = 3;
+            var msg = context.MakeMessage();
+ 
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Paper_scissors.png", "Hands_Robot_paper.png"));
+            await context.PostAsync(msg);
+
+            roundNumber = 3;
            await context.PostAsync($"Terzo round, fai la tua mossa"); 
              
         }
         else
         {
-                 roundNumber = 0;
+            var msg = context.MakeMessage();
+            
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
+            await context.PostAsync(msg);
+
+            roundNumber = 0;
            await context.PostAsync($"Partita terminata, digita avvia partita per un nuovo incontro"); 
         
             
