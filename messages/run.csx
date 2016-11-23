@@ -1,11 +1,12 @@
 #r "Newtonsoft.Json"
+#r "Microsoft.ApplicationInsights"
 #load "BasicLuisDialog.csx"
 
 using System;
 using System.Net;
 using System.Threading;
 using Newtonsoft.Json;
-
+using Microsoft.ApplicationInsights;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
@@ -13,12 +14,13 @@ using Microsoft.Bot.Connector;
 public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 {
     log.Info($"Webhook was triggered!");
-
+   
     // Initialize the azure bot
     using (BotService.Initialize())
     {
         // Deserialize the incoming activity
-        string jsonContent = await req.Content.ReadAsStringAsync();
+         TelemetryClient telemetry = new TelemetryClient();
+         string jsonContent = await req.Content.ReadAsStringAsync();
         var activity = JsonConvert.DeserializeObject<Activity>(jsonContent);
         
         // authenticate incoming request and add activity.ServiceUrl to MicrosoftAppCredentials.TrustedHostNames
@@ -50,7 +52,9 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
                             {
                                 reply.Text += $" {newMember.Name}";
                             }
-                            reply.Text += "!";
+                            telemetry.trackEvent("NewGame");
+                            telemetry.Flush();
+                            reply.Text += "Ciao!";
                             await client.Conversations.ReplyToActivityAsync(reply);
                         }
                     }
