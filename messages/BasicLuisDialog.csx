@@ -78,9 +78,11 @@ public class BasicLuisDialog : LuisDialog<object>
         {
             string listamosse = "";
 
+            int count = 0;
             foreach (var item in _risultati)
             {
-                listamosse += item.mossa.ToString() + " " + item.esito.ToString();
+                count++;
+                listamosse += count.ToString() + " : " + item.mossa.ToString() + " " + item.esito.ToString()+ " - ";
             }
 
             await context.PostAsync($"Le tue ultime mosse : " + listamosse);
