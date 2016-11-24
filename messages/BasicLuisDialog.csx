@@ -187,6 +187,8 @@ public class BasicLuisDialog : LuisDialog<object>
         string resultMachine = client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", moves, results);
         resultMachine = resultMachine.Replace("\"", "");
 
+        var msg = context.MakeMessage();
+
         if (resultMachine == "S")
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
         if (resultMachine == "P")
