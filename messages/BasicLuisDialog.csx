@@ -13,12 +13,12 @@ public class BasicLuisDialog : LuisDialog<object>
     int roundNumber = 0;
     string channel = "";
     string name = "";
-    public BasicLuisDialog(string fromChannel = "", string username = "") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
+    public BasicLuisDialog() : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
-        if (!String.IsNullOrEmpty(fromChannel))
-            this.channel = fromChannel;
-        if(!String.IsNullOrEmpty(username))
-            this.name = username;
+        //if (!String.IsNullOrEmpty(fromChannel))
+        //    this.channel = fromChannel;
+        //if(!String.IsNullOrEmpty(username))
+        //    this.name = username;
     }
 
     [LuisIntent("")]

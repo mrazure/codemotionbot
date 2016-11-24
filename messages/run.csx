@@ -34,12 +34,15 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
             telemetry.TrackEvent("New Activity - Type :" + activity.GetActivityType().ToString());
             telemetry.Flush();
             // one of these will have an interface and process it
+            log.Info($"New message from channel : "+ message.ChannelId + " by user : "+ message.From.Id +
+                    "-" + message.From.Name);
 
             switch (activity.GetActivityType())
             {
                 case ActivityTypes.Message:
-                    await Conversation.SendAsync(activity, () => new BasicLuisDialog(message.ChannelId, message.From.Id +
-                  "-" + message.From.Name));
+                    //  await Conversation.SendAsync(activity, () => new BasicLuisDialog(message.ChannelId, message.From.Id +
+                    //"-" + message.From.Name));
+                    await Conversation.SendAsync(activity, () => new BasicLuisDialog());
                     break;
                 case ActivityTypes.ConversationUpdate:
                     var client = new ConnectorClient(new Uri(activity.ServiceUrl));
