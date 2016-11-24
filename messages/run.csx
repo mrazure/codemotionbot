@@ -40,7 +40,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
             switch (activity.GetActivityType())
             {
                 case ActivityTypes.Message:
-                    await Conversation.SendAsync(activity, () => new BasicLuisDialog(message.ChannelId, activity.From.Id +
+                    await Conversation.SendAsync(activity, () => new BasicLuisDialog(activity.ChannelId, activity.From.Id +
                   "-" + activity.From.Name));
                     //await Conversation.SendAsync(activity, () => new BasicLuisDialog(log));
                     break;
