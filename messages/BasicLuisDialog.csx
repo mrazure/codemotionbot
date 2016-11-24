@@ -181,7 +181,7 @@ public class BasicLuisDialog : LuisDialog<object>
             foreach (var item in _risultati)
             {
                 moves += item.mossa;
-                _risultati += item.esito;
+                results += item.esito;
             }
         System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
         string resultMachine = client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", moves, results);
