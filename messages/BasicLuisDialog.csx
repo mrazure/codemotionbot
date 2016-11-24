@@ -21,12 +21,13 @@ public class BasicLuisDialog : LuisDialog<object>
     int roundNumber = 0;
     string channel = "";
     string name = "";
-    
-    System.Collections.Generic.List<risultati> _risultati = new System.Collections.Generic.List<risultati>(); 
-    public BasicLuisDialog(string myChannel = "",string myUsername="") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
+    int roundResult = 0;
+    int roundResultMachine = 0;
+    System.Collections.Generic.List<risultati> _risultati = new System.Collections.Generic.List<risultati>();
+    public BasicLuisDialog(string myChannel = "", string myUsername = "") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
 
-      
+
         if (!String.IsNullOrEmpty(myChannel))
             this.channel = myChannel;
         if (!String.IsNullOrEmpty(myUsername))
@@ -61,7 +62,7 @@ public class BasicLuisDialog : LuisDialog<object>
         }
         catch (Exception ex)
         {
-            await context.PostAsync($"Errore," +ex.Message); 
+            await context.PostAsync($"Errore," + ex.Message);
 
 
         }
@@ -71,7 +72,7 @@ public class BasicLuisDialog : LuisDialog<object>
         await context.PostAsync(msg);
 
         if (!String.IsNullOrEmpty(name))
-            await context.PostAsync($"Buongiorno," + this.name + ", da " + this.channel + "  hai a disposizione due comandi regole e partita"); //
+            await context.PostAsync($"Buongiorno," + this.name + ",  hai a disposizione due comandi regole e partita"); //
         else
             await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
 
@@ -85,11 +86,11 @@ public class BasicLuisDialog : LuisDialog<object>
             foreach (var item in _risultati)
             {
                 count++;
-                listamosse += count.ToString() + " : " + item.mossa.ToString() + " " + item.esito.ToString()+ " - ";
+                listamosse += count.ToString() + " : " + item.mossa.ToString() + " " + item.esito.ToString() + " - ";
             }
 
             await context.PostAsync($"Le tue ultime mosse : " + listamosse);
-        } 
+        }
     }
     [LuisIntent("Regole")]
     public async Task Regole(IDialogContext context, LuisResult result)
@@ -140,36 +141,97 @@ public class BasicLuisDialog : LuisDialog<object>
         if (tipomossa.Entity == "carta")
         {
             var msg = context.MakeMessage();
-            
+
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_paper.png", "Hands_Human_paper.png"));
             await context.PostAsync(msg);
-            _risultati.Add(new risultati() { esito = "vinto", mossa = "carta" });
+
+            // _risultati.Add(new risultati() { esito = "1", mossa = "P" });
         }
         else if (tipomossa.Entity == "forbice")
         {
             var msg = context.MakeMessage();
-            
+
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_scissors.png", "Hands_Human_scissors.png"));
             await context.PostAsync(msg);
-            _risultati.Add(new risultati() { esito = "perso", mossa = "forbice" });
+            // _risultati.Add(new risultati() { esito = "0", mossa = "S" });
         }
         else
         {
             var msg = context.MakeMessage();
-            
+
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_rock.png", "Hands_Human_rock.png"));
             await context.PostAsync(msg);
-            _risultati.Add(new risultati() { esito = "perso", mossa = "forbice" });
+            //_risultati.Add(new risultati() { esito = "0", mossa = "S" });
         }
 
+        string moves = "";
+        string results = "";
+        if (_risultati != null && _risultati.Count > 0)
+
+            foreach (var item in _risultati)
+            {
+                moves += item.mossa;
+                _risultati += item.esito;
+            }
+        System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
+        string resultMachine = client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", moves, results);
+        resultMachine = resultMachine.Replace("\"", "");
+
+        if (resultMachine == "S")
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
+        if (resultMachine == "P")
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_paper.png", "Hands_Robot_paper.png"));
+        else
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_rock.png", "Hands_Robot_rock.png"));
+
+        await context.PostAsync(msg);
+
+        if (tipomossa.Entity == "carta" && resultMachine == "S")
+        {
+            _risultati.Add(new risultati() { esito = "0", mossa = "P" });
+            roundResultMachine++;
+        }
+        if (tipomossa.Entity == "carta" && resultMachine == "P")
+            _risultati.Add(new risultati() { esito = "0", mossa = "P" });
+
+        if (tipomossa.Entity == "carta" && resultMachine == "R")
+        {
+            _risultati.Add(new risultati() { esito = "1", mossa = "P" });
+            roundResult++;
+        }
+        if (tipomossa.Entity == "forbice" && resultMachine == "S")
+        {
+            _risultati.Add(new risultati() { esito = "0", mossa = "S" });
+            roundResultMachine++;
+        }
+        if (tipomossa.Entity == "forbice" && resultMachine == "P")
+        {
+            _risultati.Add(new risultati() { esito = "1", mossa = "S" });
+            roundResult++;
+        }
+        if (tipomossa.Entity == "forbice" && resultMachine == "R")
+        {
+            _risultati.Add(new risultati() { esito = "0", mossa = "S" });
+            roundResultMachine++;
+        }
+        if (tipomossa.Entity == "sasso" && resultMachine == "R")
+            _risultati.Add(new risultati() { esito = "0", mossa = "R" });
+
+        if (tipomossa.Entity == "sasso" && resultMachine == "S")
+        {
+            _risultati.Add(new risultati() { esito = "1", mossa = "R" });
+            roundResult++;
+        }
+        if (tipomossa.Entity == "sasso" && resultMachine == "P")
+        {
+            _risultati.Add(new risultati() { esito = "0", mossa = "R" });
+            roundResultMachine++;
+        }
         if (roundNumber == 1)
         {
             // da togliere
 
             var msg = context.MakeMessage();
-
-            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
-            await context.PostAsync(msg);
 
             roundNumber = 2;
             await context.PostAsync($"Secondo round, fai la tua mossa");
@@ -189,17 +251,21 @@ public class BasicLuisDialog : LuisDialog<object>
         }
         else
         {
-            var msg = context.MakeMessage();
-
-            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
-            await context.PostAsync(msg);
 
             var newmsg = context.MakeMessage();
 
-            newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_win.png", "You_win.png"));
+            if (roundResult > roundResultMachine)
+                newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_win.png", "You_win.png"));
+            if (roundResult < roundResultMachine)
+                newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_lose.png", "You_lose.png"));
+            if (roundResult == roundResultMachine)
+                newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_equal.png", "You_equal.png"));
             await context.PostAsync(newmsg);
 
             roundNumber = 0;
+            roundResult = 0;
+            roundResultMachine = 0;
+
             await context.PostAsync($"Partita terminata, digita avvia partita per un nuovo incontro");
 
         }
@@ -215,6 +281,6 @@ public class BasicLuisDialog : LuisDialog<object>
 
             await context.PostAsync($"Errore," + ex.Message);
         }
-       
+
     }
 }
