@@ -23,14 +23,14 @@ public class BasicLuisDialog : LuisDialog<object>
     string name = "";
     
     System.Collections.Generic.List<risultati> _risultati = new System.Collections.Generic.List<risultati>(); 
-    public BasicLuisDialog(string myChannel = "",string myusername="") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
+    public BasicLuisDialog(string myChannel = "",string myUsername="") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
 
       
         if (!String.IsNullOrEmpty(myChannel))
-            this.channel = mychannel;
-        if (!String.IsNullOrEmpty(myusername))
-            this.name = myusername;
+            this.channel = myChannel;
+        if (!String.IsNullOrEmpty(myUsername))
+            this.name = myUsername;
     }
 
     [LuisIntent("")]
