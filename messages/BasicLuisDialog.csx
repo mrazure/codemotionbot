@@ -27,9 +27,9 @@ public class BasicLuisDialog : LuisDialog<object>
     {
 
       
-        if (!String.IsNullOrEmpty(fromChannel))
+        if (!String.IsNullOrEmpty(myChannel))
             this.channel = mychannel;
-        if (!String.IsNullOrEmpty(username))
+        if (!String.IsNullOrEmpty(myusername))
             this.name = myusername;
     }
 
@@ -59,8 +59,9 @@ public class BasicLuisDialog : LuisDialog<object>
 
                 _risultati = temp;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            await context.PostAsync($"Errore," +ex.Message); 
 
 
         }
@@ -209,10 +210,10 @@ public class BasicLuisDialog : LuisDialog<object>
         {
             context.UserData.SetValue<System.Collections.Generic.List<risultati>>("risultati", _risultati);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
 
-            
+            await context.PostAsync($"Errore," + ex.Message);
         }
        
     }
