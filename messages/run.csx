@@ -34,8 +34,8 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
             telemetry.TrackEvent("New Activity - Type :" + activity.GetActivityType().ToString());
             telemetry.Flush();
             // one of these will have an interface and process it
-            log.Info($"New message from channel : "+ message.ChannelId + " by user : "+ message.From.Id +
-                    "-" + message.From.Name);
+            log.Info($"New message from channel : "+ activity.ChannelId + " by user : "+ activity.From.Id +
+                    "-" + activity.From.Name);
 
             switch (activity.GetActivityType())
             {
