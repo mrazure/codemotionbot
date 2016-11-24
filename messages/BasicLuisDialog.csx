@@ -48,49 +48,59 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("Welcome")]
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
-        TelemetryClient telemetry = new TelemetryClient();
-        telemetry.TrackEvent("Welcome Game");
-        telemetry.Flush();
-
         try
         {
-            System.Collections.Generic.List<risultati> temp = context.UserData.Get<System.Collections.Generic.List<risultati>>("risultati");
 
-            if (temp != null)
+            TelemetryClient telemetry = new TelemetryClient();
+            telemetry.TrackEvent("Welcome Game");
+            telemetry.Flush();
 
-                _risultati = temp;
-        }
-        catch (Exception ex)
-        {
-            await context.PostAsync($"Errore," + ex.Message);
-
-
-        }
-
-        var msg = context.MakeMessage();
-        msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
-        await context.PostAsync(msg);
-
-        if (!String.IsNullOrEmpty(name))
-            await context.PostAsync($"Buongiorno," + this.name + ",  hai a disposizione due comandi regole e partita"); //
-        else
-            await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
-
-        context.Wait(MessageReceived);
-
-        if (_risultati != null && _risultati.Count > 0)
-        {
-            string listamosse = "";
-
-            int count = 0;
-            foreach (var item in _risultati)
+            try
             {
-                count++;
-                listamosse += count.ToString() + " : " + item.mossa.ToString() + " " + item.esito.ToString() + " - ";
+                System.Collections.Generic.List<risultati> temp = context.UserData.Get<System.Collections.Generic.List<risultati>>("risultati");
+
+                if (temp != null)
+
+                    _risultati = temp;
+            }
+            catch (Exception ex)
+            {
+                await context.PostAsync($"Errore," + ex.Message);
+
+
             }
 
-            await context.PostAsync($"Le tue ultime mosse : " + listamosse);
+            var msg = context.MakeMessage();
+            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
+            await context.PostAsync(msg);
+
+            if (!String.IsNullOrEmpty(name))
+                await context.PostAsync($"Buongiorno," + this.name + ",  hai a disposizione due comandi regole e partita"); //
+            else
+                await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
+
+            context.Wait(MessageReceived);
+
+            if (_risultati != null && _risultati.Count > 0)
+            {
+                string listamosse = "";
+
+                int count = 0;
+                foreach (var item in _risultati)
+                {
+                    count++;
+                    listamosse += count.ToString() + " : " + item.mossa.ToString() + " " + item.esito.ToString() + " - ";
+                }
+
+                await context.PostAsync($"Le tue ultime mosse : " + listamosse);
+            }
         }
+        catch (Exception)
+        {
+
+
+        }
+
     }
     [LuisIntent("Regole")]
     public async Task Regole(IDialogContext context, LuisResult result)
@@ -145,7 +155,7 @@ public class BasicLuisDialog : LuisDialog<object>
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_paper.png", "Hands_Human_paper.png"));
             await context.PostAsync(msg);
 
-             
+
         }
         else if (tipomossa.Entity == "forbice")
         {
@@ -153,7 +163,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_scissors.png", "Hands_Human_scissors.png"));
             await context.PostAsync(msg);
-      
+
         }
         else
         {
@@ -161,7 +171,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_rock.png", "Hands_Human_rock.png"));
             await context.PostAsync(msg);
-       
+
         }
 
         //string moves = "";
