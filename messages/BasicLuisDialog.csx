@@ -10,10 +10,14 @@ using Microsoft.ApplicationInsights;
 [Serializable]
 public class BasicLuisDialog : LuisDialog<object>
 {
-  int roundNumber = 0;
-    
-    public BasicLuisDialog() : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
+    int roundNumber = 0;
+    string channel = "";
+    string name = "";
+    public BasicLuisDialog(string channel, string name) : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
+        this.channel = channel;
+
+        this.name = name;
     }
 
     [LuisIntent("")]
@@ -26,20 +30,26 @@ public class BasicLuisDialog : LuisDialog<object>
         context.Wait(MessageReceived);
     }
 
-    
+
     [LuisIntent("Welcome")]
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Welcome Game");
         telemetry.Flush();
+
+
         var msg = context.MakeMessage();
         // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
         msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
         await context.PostAsync(msg);
-        await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
+        if (!String.IsNullOrEmpty(name))
+            await context.PostAsync($"Buongiorno," + name + ", da " + channel + "  hai a disposizione due comandi regole e partita"); //
+        else
+
+            await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
         context.Wait(MessageReceived);
-        
+
     }
     [LuisIntent("Regole")]
     public async Task Regole(IDialogContext context, LuisResult result)
@@ -50,7 +60,7 @@ public class BasicLuisDialog : LuisDialog<object>
         await context.PostAsync($"Le regole sono semplici, la carta vince sul sasso, la forbice vince su carta e il sasso vince sulle forbici, per iniziare scrivi partita"); //
         context.Wait(MessageReceived);
     }
-     [LuisIntent("Partita")]
+    [LuisIntent("Partita")]
     public async Task Partita(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
@@ -69,7 +79,7 @@ public class BasicLuisDialog : LuisDialog<object>
         await context.PostAsync($"Primo round, fai la tua mossa");
         context.Wait(MessageReceived);
     }
-     [LuisIntent("Mossa")]
+    [LuisIntent("Mossa")]
     public async Task Mossa(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
@@ -112,38 +122,38 @@ public class BasicLuisDialog : LuisDialog<object>
 
         }
 
-            if (roundNumber  == 1)
+        if (roundNumber == 1)
         {
             // da togliere
 
             var msg = context.MakeMessage();
-        
+
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
             await context.PostAsync(msg);
 
             roundNumber = 2;
-           await context.PostAsync($"Secondo round, fai la tua mossa"); 
-           
+            await context.PostAsync($"Secondo round, fai la tua mossa");
+
         }
-        else if(  roundNumber == 2)
-       
+        else if (roundNumber == 2)
+
         {
             var msg = context.MakeMessage();
- 
+
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_paper.png", "Hands_Robot_paper.png"));
             await context.PostAsync(msg);
 
             roundNumber = 3;
-           await context.PostAsync($"Terzo round, fai la tua mossa"); 
-             
+            await context.PostAsync($"Terzo round, fai la tua mossa");
+
         }
         else
         {
             var msg = context.MakeMessage();
-            
+
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
             await context.PostAsync(msg);
-             
+
             var newmsg = context.MakeMessage();
 
             newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_win.png", "You_win.png"));
