@@ -203,7 +203,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
         try
         {
-            context.UserData.SetValue<risultati>("risultati", _risultati);
+            context.UserData.SetValue<System.Collections.Generic.List<risultati>>("risultati", _risultati);
         }
         catch (Exception)
         {
