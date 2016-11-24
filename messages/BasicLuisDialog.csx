@@ -6,6 +6,14 @@ using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.ApplicationInsights;
 
+[Serializable]
+public class risultati
+{
+
+    public string mossa { get; set; }
+
+    public string esito { get; set; }
+}
 // For more information about this template visit http://aka.ms/azurebots-csharp-luis
 [Serializable]
 public class BasicLuisDialog : LuisDialog<object>
@@ -13,8 +21,22 @@ public class BasicLuisDialog : LuisDialog<object>
     int roundNumber = 0;
     string channel = "";
     string name = "";
+    System.Collections.Generic.List<risultati> _risultati = new System.Collections.Generic.List<risultati>(); 
     public BasicLuisDialog() : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
+        try
+        {
+           List<risultati> temp = context.UserData.Get<risultati>("risultati");
+
+            if (temp != null)
+
+                _risultati = temp;
+        }
+        catch (Exception)
+        {
+
+            
+        }
         //if (!String.IsNullOrEmpty(fromChannel))
         //    this.channel = fromChannel;
         //if(!String.IsNullOrEmpty(username))
@@ -50,6 +72,17 @@ public class BasicLuisDialog : LuisDialog<object>
 
         context.Wait(MessageReceived);
 
+        if (_risultati != null && _risultati.Count > 0)
+        {
+            string listamosse = "";
+
+            foreach (var item in _risultati)
+            {
+                listamosse += item.mossa.ToString() + " " + item.esito.ToString();
+            }
+
+            await context.PostAsync($"Le tue ultime mosse : " + listamosse);
+        } 
     }
     [LuisIntent("Regole")]
     public async Task Regole(IDialogContext context, LuisResult result)
@@ -100,26 +133,26 @@ public class BasicLuisDialog : LuisDialog<object>
         if (tipomossa.Entity == "carta")
         {
             var msg = context.MakeMessage();
-            // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
+            
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_paper.png", "Hands_Human_paper.png"));
             await context.PostAsync(msg);
+            _risultati.Add(new risultati() { esito = "vinto", mossa = "carta" });
         }
         else if (tipomossa.Entity == "forbice")
         {
             var msg = context.MakeMessage();
-            // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
+            
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_scissors.png", "Hands_Human_scissors.png"));
             await context.PostAsync(msg);
-
+            _risultati.Add(new risultati() { esito = "perso", mossa = "forbice" });
         }
         else
         {
-
             var msg = context.MakeMessage();
-            // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
+            
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_rock.png", "Hands_Human_rock.png"));
             await context.PostAsync(msg);
-
+            _risultati.Add(new risultati() { esito = "perso", mossa = "forbice" });
         }
 
         if (roundNumber == 1)
@@ -165,5 +198,16 @@ public class BasicLuisDialog : LuisDialog<object>
         }
 
         context.Wait(MessageReceived);
+
+        try
+        {
+            context.UserData.SetValue<risultati>("risultati", _risultati);
+        }
+        catch (Exception)
+        {
+
+            
+        }
+       
     }
 }
