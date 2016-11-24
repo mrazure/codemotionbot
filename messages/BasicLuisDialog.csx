@@ -26,7 +26,7 @@ public class BasicLuisDialog : LuisDialog<object>
     {
         try
         {
-           List<risultati> temp = context.UserData.Get<risultati>("risultati");
+            System.Collections.Generic.List<risultati> temp = context.UserData.Get<System.Collections.Generic.List<risultati>>("risultati");
 
             if (temp != null)
 
