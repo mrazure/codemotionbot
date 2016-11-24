@@ -13,11 +13,12 @@ public class BasicLuisDialog : LuisDialog<object>
     int roundNumber = 0;
     string channel = "";
     string name = "";
-    public BasicLuisDialog(string channel, string name) : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
+    public BasicLuisDialog(string fromChannel = "", string username = "") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
-        this.channel = channel;
-
-        this.name = name;
+        if (!String.IsNullOrEmpty(fromChannel))
+            this.channel = fromChannel;
+        if(!String.IsNullOrEmpty(username))
+            this.name = username;
     }
 
     [LuisIntent("")]
@@ -38,16 +39,15 @@ public class BasicLuisDialog : LuisDialog<object>
         telemetry.TrackEvent("Welcome Game");
         telemetry.Flush();
 
-
         var msg = context.MakeMessage();
-        // msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "http://rockpaperscissors.mybluemix.net/img/Background_Scissors.png","Background_Scissors.png"));
         msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
         await context.PostAsync(msg);
-        if (!String.IsNullOrEmpty(name))
-            await context.PostAsync($"Buongiorno," + name + ", da " + channel + "  hai a disposizione due comandi regole e partita"); //
-        else
 
+        if (!String.IsNullOrEmpty(name))
+            await context.PostAsync($"Buongiorno," + this.name + ", da " + this.channel + "  hai a disposizione due comandi regole e partita"); //
+        else
             await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
+
         context.Wait(MessageReceived);
 
     }
