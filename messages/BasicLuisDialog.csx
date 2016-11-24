@@ -24,19 +24,7 @@ public class BasicLuisDialog : LuisDialog<object>
     System.Collections.Generic.List<risultati> _risultati = new System.Collections.Generic.List<risultati>(); 
     public BasicLuisDialog() : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
-        try
-        {
-            System.Collections.Generic.List<risultati> temp = context.UserData.Get<System.Collections.Generic.List<risultati>>("risultati");
-
-            if (temp != null)
-
-                _risultati = temp;
-        }
-        catch (Exception)
-        {
-
-            
-        }
+        
         //if (!String.IsNullOrEmpty(fromChannel))
         //    this.channel = fromChannel;
         //if(!String.IsNullOrEmpty(username))
@@ -60,6 +48,20 @@ public class BasicLuisDialog : LuisDialog<object>
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Welcome Game");
         telemetry.Flush();
+
+        try
+        {
+            System.Collections.Generic.List<risultati> temp = context.UserData.Get<System.Collections.Generic.List<risultati>>("risultati");
+
+            if (temp != null)
+
+                _risultati = temp;
+        }
+        catch (Exception)
+        {
+
+
+        }
 
         var msg = context.MakeMessage();
         msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
