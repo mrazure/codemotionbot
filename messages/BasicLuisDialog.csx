@@ -184,7 +184,7 @@ public class BasicLuisDialog : LuisDialog<object>
                 results += item.esito;
             }
         System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
-        var resultMachine = await client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", moves, results)).Wait();
+        var resultMachine = await client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", moves, results));
         
         resultMachine = resultMachine.Replace("\"", "");
 
