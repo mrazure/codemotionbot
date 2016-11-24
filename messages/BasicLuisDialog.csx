@@ -21,16 +21,16 @@ public class BasicLuisDialog : LuisDialog<object>
     int roundNumber = 0;
     string channel = "";
     string name = "";
-    TraceWriter mylog;
+    
     System.Collections.Generic.List<risultati> _risultati = new System.Collections.Generic.List<risultati>(); 
-    public BasicLuisDialog(TraceWriter log) : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
+    public BasicLuisDialog(string myChannel = "",string myusername="") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
 
-        this.mylog = log;
-        //if (!String.IsNullOrEmpty(fromChannel))
-        //    this.channel = fromChannel;
-        //if(!String.IsNullOrEmpty(username))
-        //    this.name = username;
+      
+        if (!String.IsNullOrEmpty(fromChannel))
+            this.channel = mychannel;
+        if (!String.IsNullOrEmpty(username))
+            this.name = myusername;
     }
 
     [LuisIntent("")]
