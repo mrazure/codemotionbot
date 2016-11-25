@@ -17,7 +17,7 @@ public class HistoryMove
     public string result { get; set; }
 }
 
-public class Score
+public class ScoreFight
 {
     public int winNumber { get; set; }
 
@@ -35,7 +35,7 @@ public class BasicLuisDialog : LuisDialog<object>
     int roundResult = 0;
     int roundResultMachine = 0;
     bool startFight = false;
-    Score yourScore = new Score();
+    ScoreFight yourScore = new ScoreFight();
 
     System.Collections.Generic.List<HistoryMove> _hystoryMoves = new System.Collections.Generic.List<HistoryMove>();
     public BasicLuisDialog(string myChannel = "", string myUsername = "") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
@@ -104,7 +104,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
             try
             {
-                Score scoreTemp = context.UserData.Get<Score>("yourscore");
+                ScoreFight scoreTemp = context.UserData.Get<ScoreFight>("yourscore");
 
                 if (scoreTemp != null)
 
@@ -125,8 +125,7 @@ public class BasicLuisDialog : LuisDialog<object>
             else
                 await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
 
-            context.Wait(MessageReceived);
-
+        
             if (_hystoryMoves != null && _hystoryMoves.Count > 0)
             {
                 string moves = "";
@@ -143,12 +142,12 @@ public class BasicLuisDialog : LuisDialog<object>
                 await context.PostAsync($"Ecco i tuoi ultimi combattimenti : " + moves);
             }
 
-            if (yourScore != null && ( yourScore.loseNumber != 0 || yourScore.winNumber != 0))
+            if (yourScore != null && (yourScore.loseNumber != 0 || yourScore.winNumber != 0))
             {
                 await context.PostAsync($"Ecco i tuoi risultati " + yourScore.winNumber.ToString() + " vittorie, " + yourScore.loseNumber.ToString() + " sconfitte, " + yourScore.equalNumber.ToString() + " pareggi!");
             }
 
-        
+
 
         }
         catch (Exception)
@@ -156,6 +155,9 @@ public class BasicLuisDialog : LuisDialog<object>
 
 
         }
+
+        context.Wait(MessageReceived);
+
 
     }
     [LuisIntent("Regole")]
@@ -363,7 +365,7 @@ public class BasicLuisDialog : LuisDialog<object>
             {
                 if (yourScore == null)
 
-                    yourScore = new Score();
+                    yourScore = new ScoreFight();
 
                 if (fightResult == 0)
                     yourScore.loseNumber++;
@@ -374,7 +376,7 @@ public class BasicLuisDialog : LuisDialog<object>
                 if (fightResult == 0)
                     yourScore.equalNumber++;
 
-                context.UserData.SetValue("yourscore", yourScore);
+                context.UserData.SetValue<ScoreFight>("yourscore", yourScore);
 
             }
             catch (Exception ex)
