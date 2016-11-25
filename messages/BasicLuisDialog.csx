@@ -195,9 +195,9 @@ public class BasicLuisDialog : LuisDialog<object>
             resultMachine = resultMachine.Replace("\"", "");
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            await context.PostAsync($"Errore nell'invocazione di AI");
+            await context.PostAsync($"Errore nell'invocazione di AI " + ex.Message);
 
         }
 
