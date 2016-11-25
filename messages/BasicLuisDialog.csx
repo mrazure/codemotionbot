@@ -102,19 +102,19 @@ public class BasicLuisDialog : LuisDialog<object>
             }
 
 
-            //try
-            //{
-            //    ScoreFight scoreTemp = context.UserData.Get<ScoreFight>("yourscore");
+            try
+            {
+                ScoreFight scoreTemp = context.UserData.Get<ScoreFight>("yourscore");
 
-            //    if (scoreTemp != null)
+                if (scoreTemp != null)
 
-            //        yourScore = scoreTemp;
-            //}
-            //catch (Exception ex)
-            //{
-            //    // await context.PostAsync($"Errore," + ex.Message);
+                    yourScore = scoreTemp;
+            }
+            catch (Exception ex)
+            {
+                // await context.PostAsync($"Errore," + ex.Message);
 
-            //}
+            }
 
             var msg = context.MakeMessage();
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
@@ -125,7 +125,7 @@ public class BasicLuisDialog : LuisDialog<object>
             else
                 await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
 
-        
+
             if (_hystoryMoves != null && _hystoryMoves.Count > 0)
             {
                 string moves = "";
@@ -147,8 +147,6 @@ public class BasicLuisDialog : LuisDialog<object>
                 await context.PostAsync($"Ecco i tuoi risultati " + yourScore.winNumber.ToString() + " vittorie, " + yourScore.loseNumber.ToString() + " sconfitte, " + yourScore.equalNumber.ToString() + " pareggi!");
             }
 
-            context.Wait(MessageReceived);
-
 
         }
         catch (Exception)
@@ -157,7 +155,9 @@ public class BasicLuisDialog : LuisDialog<object>
 
         }
 
-      
+
+        context.Wait(MessageReceived);
+
 
 
     }
