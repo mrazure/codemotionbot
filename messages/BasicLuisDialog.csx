@@ -7,12 +7,14 @@ using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.ApplicationInsights;
 
 [Serializable]
-public class risultati
+public class HistoryMove
 {
 
-    public string mossa { get; set; }
+    public string human { get; set; }
 
-    public string esito { get; set; }
+    public string machine { get; set; }
+
+    public string result { get; set; }
 }
 // For more information about this template visit http://aka.ms/azurebots-csharp-luis
 [Serializable]
@@ -23,7 +25,7 @@ public class BasicLuisDialog : LuisDialog<object>
     string name = "";
     int roundResult = 0;
     int roundResultMachine = 0;
-    System.Collections.Generic.List<risultati> _risultati = new System.Collections.Generic.List<risultati>();
+    System.Collections.Generic.List<HistoryMove> _hystoryMoves = new System.Collections.Generic.List<HistoryMove>();
     public BasicLuisDialog(string myChannel = "", string myUsername = "") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
 
@@ -57,11 +59,11 @@ public class BasicLuisDialog : LuisDialog<object>
 
             try
             {
-                System.Collections.Generic.List<risultati> temp = context.UserData.Get<System.Collections.Generic.List<risultati>>("nuovirisultati");
+                System.Collections.Generic.List<HistoryMove> temp = context.UserData.Get<System.Collections.Generic.List<HistoryMove>>("historymymoves");
 
                 if (temp != null)
 
-                    _risultati = temp;
+                    _hystoryMoves = temp;
             }
             catch (Exception ex)
             {
@@ -81,20 +83,20 @@ public class BasicLuisDialog : LuisDialog<object>
 
             context.Wait(MessageReceived);
 
-            if (_risultati != null && _risultati.Count > 0)
+            if (_hystoryMoves != null && _hystoryMoves.Count > 0)
             {
-                string listamosse = "";
+                string moves = "";
 
 
-                for (int i = 0; i < _risultati.Count; i++)
+                for (int i = 0; i < _hystoryMoves.Count; i++)
                 {
-                    if (i == _risultati.Count - 1)
-                        listamosse += (i + 1).ToString() + " ) : " + _risultati[i].mossa.ToString() + " " + _risultati[i].esito.ToString() ;
+                    if (i == _hystoryMoves.Count - 1)
+                        moves += (i + 1).ToString() + " ) tu : " + _hystoryMoves[i].human.ToString() + " - macchina : " + _hystoryMoves[i].machine.ToString() ;
                     else
-                        listamosse += (i + 1).ToString() + " ) : " + _risultati[i].mossa.ToString() + " " + _risultati[i].esito.ToString() + " - ";
+                        moves += (i + 1).ToString() + " ) tu : " + _hystoryMoves[i].human.ToString() + " - macchina : " + _hystoryMoves[i].machine.ToString() + " - ";
                 }
 
-                await context.PostAsync($"Ecco tue ultime mosse : " + listamosse);
+                await context.PostAsync($"Ecco i tuoi ultimi combattimenti : " + moves);
             }
         }
         catch (Exception)
@@ -138,7 +140,7 @@ public class BasicLuisDialog : LuisDialog<object>
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Mossa");
         telemetry.Flush();
-
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         EntityRecommendation tipomossa;
         if (!result.TryFindEntity("tipomossa", out tipomossa))
         {
@@ -176,23 +178,23 @@ public class BasicLuisDialog : LuisDialog<object>
 
         }
 
-        string moves = "";
-        string results = "";
+        string humanMoves = "";
+        string machineMoves = "";
         string resultMachine = "";
 
         try
         {
-            if (_risultati != null && _risultati.Count > 0)
+            if (_hystoryMoves != null && _hystoryMoves.Count > 0)
 
-                foreach (var item in _risultati)
+                foreach (var item in _hystoryMoves)
                 {
-                    moves += item.mossa;
-                    results += item.esito;
+                    humanMoves += item.human;
+                    machineMoves += item.machine;
                 }
 
             System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
 
-            resultMachine = await client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", moves, results));
+            resultMachine = await client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", humanMoves, machineMoves));
 
             resultMachine = resultMachine.Replace("\"", "");
 
@@ -218,50 +220,51 @@ public class BasicLuisDialog : LuisDialog<object>
 
         if (tipomossa.Entity == "carta" && resultMachine == "S")
         {
-            _risultati.Add(new risultati() { esito = "0", mossa = "P" });
+            _hystoryMoves.Add(new HistoryMove() { result="0", human = "P", machine = "P" });
             roundResultMachine++;
         }
         if (tipomossa.Entity == "carta" && resultMachine == "P")
-            _risultati.Add(new risultati() { esito = "0", mossa = "P" });
+
+            _hystoryMoves.Add(new HistoryMove() { result = "0", human = "P", machine = "P" });
 
         if (tipomossa.Entity == "carta" && resultMachine == "R")
         {
-            _risultati.Add(new risultati() { esito = "1", mossa = "P" });
+            _hystoryMoves.Add(new HistoryMove() { result = "1", human = "P", machine = "P" });
             roundResult++;
         }
         if (tipomossa.Entity == "forbice" && resultMachine == "S")
         {
-            _risultati.Add(new risultati() { esito = "0", mossa = "S" });
+            _hystoryMoves.Add(new HistoryMove() { result = "0", human = "S", machine = "S" });
             roundResultMachine++;
         }
         if (tipomossa.Entity == "forbice" && resultMachine == "P")
         {
-            _risultati.Add(new risultati() { esito = "1", mossa = "S" });
+            _hystoryMoves.Add(new HistoryMove() { result = "1", human = "S", machine = "S" });
             roundResult++;
         }
         if (tipomossa.Entity == "forbice" && resultMachine == "R")
         {
-            _risultati.Add(new risultati() { esito = "0", mossa = "S" });
+            _hystoryMoves.Add(new HistoryMove() { result = "0", human = "S", machine = "S" });
             roundResultMachine++;
         }
         if (tipomossa.Entity == "sasso" && resultMachine == "R")
-            _risultati.Add(new risultati() { esito = "0", mossa = "R" });
+
+            _hystoryMoves.Add(new HistoryMove() { result = "0", human = "R", machine = "R" });
 
         if (tipomossa.Entity == "sasso" && resultMachine == "S")
         {
-            _risultati.Add(new risultati() { esito = "1", mossa = "R" });
+            _hystoryMoves.Add(new HistoryMove() { result = "1", human = "R", machine = "R" });
             roundResult++;
         }
         if (tipomossa.Entity == "sasso" && resultMachine == "P")
         {
-            _risultati.Add(new risultati() { esito = "0", mossa = "R" });
+            _hystoryMoves.Add(new HistoryMove() { result = "0", human = "R", machine = "R" });
             roundResultMachine++;
         }
         if (roundNumber == 1)
         {
 
             roundNumber = 2;
-
             await context.PostAsync($"Secondo round, fai la tua mossa");
 
         }
@@ -297,7 +300,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
         try
         {
-            context.UserData.SetValue<System.Collections.Generic.List<risultati>>("nuovirisultati", _risultati);
+            context.UserData.SetValue<System.Collections.Generic.List<HistoryMove>>("historymymoves", _hystoryMoves);
         }
         catch (Exception ex)
         {
@@ -305,5 +308,11 @@ public class BasicLuisDialog : LuisDialog<object>
             await context.PostAsync($"Errore," + ex.Message);
         }
 
+        stopwatch.Stop();
+
+        telemetry.TrackRequest("Mossa", DateTime.Now,
+           stopwatch.Elapsed,
+           "200", true);
+        telemetry.Flush();
     }
 }
