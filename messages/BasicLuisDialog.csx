@@ -85,14 +85,16 @@ public class BasicLuisDialog : LuisDialog<object>
             {
                 string listamosse = "";
 
-                int count = 0;
-                foreach (var item in _risultati)
+
+                for (int i = 0; i < _risultati.Count; i++)
                 {
-                    count++;
-                    listamosse += count.ToString() + " : " + item.mossa.ToString() + " " + item.esito.ToString() + " - ";
+                    if (i == _risultati.Count - 1)
+                        listamosse += (i + 1).ToString() + " ) : " + item[i].mossa.ToString() + " " + item[i].esito.ToString() ;
+                    else
+                        listamosse += (i + 1).ToString() + " ) : " + item[i].mossa.ToString() + " " + item[i].esito.ToString() + " - ";
                 }
 
-                await context.PostAsync($"Le tue ultime mosse : " + listamosse);
+                await context.PostAsync($"Ecco tue ultime mosse : " + listamosse);
             }
         }
         catch (Exception)
@@ -177,7 +179,7 @@ public class BasicLuisDialog : LuisDialog<object>
         string moves = "";
         string results = "";
         string resultMachine = "";
-        
+
         try
         {
             if (_risultati != null && _risultati.Count > 0)
@@ -205,10 +207,12 @@ public class BasicLuisDialog : LuisDialog<object>
 
         if (resultMachine == "S")
             machineMsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_scissors.png", "Hands_Robot_scissors.png"));
-        if (resultMachine == "P")
+        else if (resultMachine == "P")
             machineMsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_paper.png", "Hands_Robot_paper.png"));
-        else
+        else if (resultMachine == "R")
             machineMsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_rock.png", "Hands_Robot_rock.png"));
+        else
+            await context.PostAsync($"Non ho nessuna mossa : " + resultMachine);
 
         await context.PostAsync(machineMsg);
 
@@ -255,14 +259,13 @@ public class BasicLuisDialog : LuisDialog<object>
         }
         if (roundNumber == 1)
         {
-            // da togliere
 
             roundNumber = 2;
+
             await context.PostAsync($"Secondo round, fai la tua mossa");
 
         }
         else if (roundNumber == 2)
-
         {
 
             roundNumber = 3;
