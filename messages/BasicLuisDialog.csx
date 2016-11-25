@@ -57,7 +57,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
             try
             {
-                System.Collections.Generic.List<risultati> temp = context.UserData.Get<System.Collections.Generic.List<risultati>>("risultati");
+                System.Collections.Generic.List<risultati> temp = context.UserData.Get<System.Collections.Generic.List<risultati>>("nuovirisultati");
 
                 if (temp != null)
 
@@ -176,17 +176,29 @@ public class BasicLuisDialog : LuisDialog<object>
 
         string moves = "";
         string results = "";
-        if (_risultati != null && _risultati.Count > 0)
-
-            foreach (var item in _risultati)
-            {
-                moves += item.mossa;
-                results += item.esito;
-            }
-        System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
-        var resultMachine = await client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", moves, results));
+        string resultMachine = "";
         
-        resultMachine = resultMachine.Replace("\"", "");
+        try
+        {
+            if (_risultati != null && _risultati.Count > 0)
+
+                foreach (var item in _risultati)
+                {
+                    moves += item.mossa;
+                    results += item.esito;
+                }
+
+            System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
+            var resultMachine = await client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", moves, results));
+
+            resultMachine = resultMachine.Replace("\"", "");
+
+        }
+        catch (Exception)
+        {
+            await context.PostAsync($"Errore nell'invocazione di AI");
+
+        }
 
         var machineMsg = context.MakeMessage();
 
@@ -244,8 +256,6 @@ public class BasicLuisDialog : LuisDialog<object>
         {
             // da togliere
 
-            var msg = context.MakeMessage();
-
             roundNumber = 2;
             await context.PostAsync($"Secondo round, fai la tua mossa");
 
@@ -253,10 +263,6 @@ public class BasicLuisDialog : LuisDialog<object>
         else if (roundNumber == 2)
 
         {
-            var msg = context.MakeMessage();
-
-            msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_paper.png", "Hands_Robot_paper.png"));
-            await context.PostAsync(msg);
 
             roundNumber = 3;
             await context.PostAsync($"Terzo round, fai la tua mossa");
@@ -287,7 +293,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
         try
         {
-            context.UserData.SetValue<System.Collections.Generic.List<risultati>>("risultati", _risultati);
+            context.UserData.SetValue<System.Collections.Generic.List<risultati>>("nuovirisultati", _risultati);
         }
         catch (Exception ex)
         {
