@@ -16,7 +16,7 @@ public class HistoryMove
 
     public string result { get; set; }
 }
-
+[Serializable]
 public class ScoreFight
 {
     public int winNumber { get; set; }
