@@ -55,7 +55,9 @@ public class BasicLuisDialog : LuisDialog<object>
         {
             context.UserData.SetValue<System.Collections.Generic.List<HistoryMove>>("historymymoves", _noresult);
 
-            await context.PostAsync($"Ho azzerato i tuoi dati ");  
+            await context.PostAsync($"Ho azzerato i tuoi dati ");
+
+            context.Wait(MessageReceived);
         }
         catch (Exception ex)
         {
