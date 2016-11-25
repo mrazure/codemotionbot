@@ -142,7 +142,7 @@ public class BasicLuisDialog : LuisDialog<object>
                 await context.PostAsync($"Ecco i tuoi ultimi combattimenti : " + moves);
             }
 
-            if (yourScore != null && (yourScore.loseNumber != 0 || yourScore.winNumber != 0))
+            if (yourScore != null && (yourScore.loseNumber != 0 || yourScore.winNumber != 0 || yourScore.equalNumber))
             {
                 await context.PostAsync($"Ecco i tuoi risultati " + yourScore.winNumber.ToString() + " vittorie, " + yourScore.loseNumber.ToString() + " sconfitte, " + yourScore.equalNumber.ToString() + " pareggi!");
             }
