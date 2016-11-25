@@ -46,7 +46,23 @@ public class BasicLuisDialog : LuisDialog<object>
         context.Wait(MessageReceived);
     }
 
+    [LuisIntent("Reset")]
+    public async Task Reset(IDialogContext context, LuisResult result)
+    {
+        var _noresult = new System.Collections.Generic.List<HistoryMove>();
 
+        try
+        {
+            context.UserData.SetValue<System.Collections.Generic.List<HistoryMove>>("historymymoves", _noresult);
+
+            await context.PostAsync($"Ho azzerato i tuoi dati ");  
+        }
+        catch (Exception ex)
+        {
+
+            await context.PostAsync($"Errore durante il reset ," + ex.Message);
+        }
+    }
     [LuisIntent("Welcome")]
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
@@ -67,8 +83,7 @@ public class BasicLuisDialog : LuisDialog<object>
             }
             catch (Exception ex)
             {
-                await context.PostAsync($"Errore," + ex.Message);
-
+                // await context.PostAsync($"Errore," + ex.Message);
 
             }
 
@@ -91,7 +106,7 @@ public class BasicLuisDialog : LuisDialog<object>
                 for (int i = 0; i < _hystoryMoves.Count; i++)
                 {
                     if (i == _hystoryMoves.Count - 1)
-                        moves += (i + 1).ToString() + " ) tu : " + _hystoryMoves[i].human.ToString() + " - macchina : " + _hystoryMoves[i].machine.ToString() ;
+                        moves += (i + 1).ToString() + " ) tu : " + _hystoryMoves[i].human.ToString() + " - macchina : " + _hystoryMoves[i].machine.ToString();
                     else
                         moves += (i + 1).ToString() + " ) tu : " + _hystoryMoves[i].human.ToString() + " - macchina : " + _hystoryMoves[i].machine.ToString() + " - ";
                 }
@@ -220,7 +235,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
         if (tipomossa.Entity == "carta" && resultMachine == "S")
         {
-            _hystoryMoves.Add(new HistoryMove() { result="0", human = "P", machine = "P" });
+            _hystoryMoves.Add(new HistoryMove() { result = "0", human = "P", machine = "P" });
             roundResultMachine++;
         }
         if (tipomossa.Entity == "carta" && resultMachine == "P")
