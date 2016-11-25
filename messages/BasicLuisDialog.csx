@@ -104,7 +104,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
             try
             {
-                ScoreFight scoreTemp = context.UserData.Get<ScoreFight>("yourscore");
+                ScoreFight scoreTemp = context.UserData.Get<ScoreFight>("fightscore");
 
                 if (scoreTemp != null)
 
@@ -112,7 +112,7 @@ public class BasicLuisDialog : LuisDialog<object>
             }
             catch (Exception ex)
             {
-                // await context.PostAsync($"Errore," + ex.Message);
+             //  await context.PostAsync($"Errore," + ex.Message);
 
             }
 
@@ -152,14 +152,9 @@ public class BasicLuisDialog : LuisDialog<object>
         catch (Exception)
         {
 
-
         }
-
-
         context.Wait(MessageReceived);
-
-
-
+        
     }
     [LuisIntent("Regole")]
     public async Task Regole(IDialogContext context, LuisResult result)
@@ -370,10 +365,10 @@ public class BasicLuisDialog : LuisDialog<object>
                 if (fightResult == 1)
                     yourScore.winNumber++;
 
-                if (fightResult == 0)
+                if (fightResult == 2)
                     yourScore.equalNumber++;
 
-                context.UserData.SetValue<ScoreFight>("yourscore", yourScore);
+                context.UserData.SetValue<ScoreFight>("fightscore", yourScore);
 
             }
             catch (Exception ex)
