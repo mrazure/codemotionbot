@@ -258,7 +258,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
             System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
 
-            resultMachine = await client.GetStringAsync(String.Format("https://rpscodemotion.azurewebsites.net/api/RPSmove?playerMoves={0}&comMoves={1}&level=0", humanMoves, machineMoves));
+            resultMachine = await client.GetStringAsync(String.Format("https://codemotionmilano.azurewebsites.net/api/FunctionCodeMotionMilano?playerMoves={0}&comMoves={1}&level=0", humanMoves, machineMoves));
 
             resultMachine = resultMachine.Replace("\"", "");
 
@@ -330,18 +330,14 @@ public class BasicLuisDialog : LuisDialog<object>
 
             roundNumber = 2;
             await context.PostAsync($"Secondo round, fai la tua mossa");
-
         }
         else if (roundNumber == 2)
         {
-
             roundNumber = 3;
             await context.PostAsync($"Terzo round, fai la tua mossa");
-
         }
         else
         {
-
             var newmsg = context.MakeMessage();
             int fightResult = 0;
 
