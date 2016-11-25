@@ -16,6 +16,15 @@ public class HistoryMove
 
     public string result { get; set; }
 }
+
+public class Score
+{
+    public int winNumber { get; set; }
+
+    public int loseNumber { get; set; }
+
+    public int equalNumber { get; set; }
+}
 // For more information about this template visit http://aka.ms/azurebots-csharp-luis
 [Serializable]
 public class BasicLuisDialog : LuisDialog<object>
@@ -26,6 +35,7 @@ public class BasicLuisDialog : LuisDialog<object>
     int roundResult = 0;
     int roundResultMachine = 0;
     bool startFight = false;
+    Score yourScore = new Score();
 
     System.Collections.Generic.List<HistoryMove> _hystoryMoves = new System.Collections.Generic.List<HistoryMove>();
     public BasicLuisDialog(string myChannel = "", string myUsername = "") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
@@ -91,6 +101,21 @@ public class BasicLuisDialog : LuisDialog<object>
 
             }
 
+
+            try
+            {
+                Score scoreTemp = context.UserData.Get<Score>("yourscore");
+
+                if (scoreTemp != null)
+
+                    yourScore = scoreTemp;
+            }
+            catch (Exception ex)
+            {
+                // await context.PostAsync($"Errore," + ex.Message);
+
+            }
+
             var msg = context.MakeMessage();
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
             await context.PostAsync(msg);
@@ -99,8 +124,6 @@ public class BasicLuisDialog : LuisDialog<object>
                 await context.PostAsync($"Buongiorno," + this.name + ",  hai a disposizione due comandi regole e partita"); //
             else
                 await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
-
-            context.Wait(MessageReceived);
 
             if (_hystoryMoves != null && _hystoryMoves.Count > 0)
             {
@@ -117,6 +140,14 @@ public class BasicLuisDialog : LuisDialog<object>
 
                 await context.PostAsync($"Ecco i tuoi ultimi combattimenti : " + moves);
             }
+
+            if (yourScore != null && ( yourScore.loseNumber != 0 || yourScore.winNumber != 0))
+            {
+                await context.PostAsync($"Ecco i tuoi risultati " + yourScore.winNumber.ToString() + " vittorie, " + yourScore.loseNumber.ToString() + " sconfitte, " + yourScore.equalNumber.ToString() + " pareggi!");
+            }
+
+            context.Wait(MessageReceived);
+
         }
         catch (Exception)
         {
@@ -147,7 +178,7 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task AvviaPartita(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
-        telemetry.TrackEvent("Avvia Partita"); 
+        telemetry.TrackEvent("Avvia Partita");
         telemetry.Flush();
         startFight = true;
         roundNumber = 1;
@@ -307,14 +338,48 @@ public class BasicLuisDialog : LuisDialog<object>
         {
 
             var newmsg = context.MakeMessage();
+            int fightResult = 0;
 
             if (roundResult > roundResultMachine)
+            {
                 newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_win.png", "You_win.png"));
+                fightResult = 1;
+            }
             if (roundResult < roundResultMachine)
+            {
                 newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_lose.png", "You_lose.png"));
+                fightResult = 0;
+            }
             if (roundResult == roundResultMachine)
+            {
+                fightResult = 2;
                 newmsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/You_equal.png", "You_equal.png"));
+            }
             await context.PostAsync(newmsg);
+
+            try
+            {
+                if (yourScore == null)
+
+                    yourScore = new Score();
+
+                if (fightResult == 0)
+                    yourScore.loseNumber++;
+
+                if (fightResult == 1)
+                    yourScore.winNumber++;
+
+                if (fightResult == 0)
+                    yourScore.equalNumber++;
+
+                context.UserData.SetValue("yourscore", yourScore);
+
+            }
+            catch (Exception ex)
+            {
+
+                await context.PostAsync($"Errore," + ex.Message);
+            }
 
             roundNumber = 0;
             roundResult = 0;
