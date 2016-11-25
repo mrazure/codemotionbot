@@ -25,6 +25,8 @@ public class BasicLuisDialog : LuisDialog<object>
     string name = "";
     int roundResult = 0;
     int roundResultMachine = 0;
+    bool startFight = false;
+
     System.Collections.Generic.List<HistoryMove> _hystoryMoves = new System.Collections.Generic.List<HistoryMove>();
     public BasicLuisDialog(string myChannel = "", string myUsername = "") : base(new LuisService(new LuisModelAttribute(Utils.GetAppSetting("LuisAppId"), Utils.GetAppSetting("LuisAPIKey"))))
     {
@@ -145,15 +147,24 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task AvviaPartita(IDialogContext context, LuisResult result)
     {
         TelemetryClient telemetry = new TelemetryClient();
-        telemetry.TrackEvent("Avvia Partita");
+        telemetry.TrackEvent("Avvia Partita"); 
         telemetry.Flush();
+        startFight = true;
         roundNumber = 1;
-        await context.PostAsync($"Primo round, fai la tua mossa");
+        await context.PostAsync($"Primo round, lancia la tua mossa ( sasso , carta o forbice ) ");
         context.Wait(MessageReceived);
     }
     [LuisIntent("Mossa")]
     public async Task Mossa(IDialogContext context, LuisResult result)
     {
+        if (!startFight)
+        {
+            startFight = true;
+            roundNumber = 1;
+            await context.PostAsync($"Ok avvio una partita, primo round, lancia la tua mossa ( sasso , carta o forbice ) ");
+            context.Wait(MessageReceived);
+            return;
+        }
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Mossa");
         telemetry.Flush();
@@ -308,6 +319,7 @@ public class BasicLuisDialog : LuisDialog<object>
             roundNumber = 0;
             roundResult = 0;
             roundResultMachine = 0;
+            startFight = false;
 
             await context.PostAsync($"Partita terminata, digita avvia partita per un nuovo incontro");
 
