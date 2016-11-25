@@ -125,6 +125,8 @@ public class BasicLuisDialog : LuisDialog<object>
             else
                 await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
 
+            context.Wait(MessageReceived);
+
             if (_hystoryMoves != null && _hystoryMoves.Count > 0)
             {
                 string moves = "";
@@ -146,7 +148,7 @@ public class BasicLuisDialog : LuisDialog<object>
                 await context.PostAsync($"Ecco i tuoi risultati " + yourScore.winNumber.ToString() + " vittorie, " + yourScore.loseNumber.ToString() + " sconfitte, " + yourScore.equalNumber.ToString() + " pareggi!");
             }
 
-            context.Wait(MessageReceived);
+        
 
         }
         catch (Exception)
