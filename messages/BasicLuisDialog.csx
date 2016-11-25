@@ -89,9 +89,9 @@ public class BasicLuisDialog : LuisDialog<object>
                 for (int i = 0; i < _risultati.Count; i++)
                 {
                     if (i == _risultati.Count - 1)
-                        listamosse += (i + 1).ToString() + " ) : " + item[i].mossa.ToString() + " " + item[i].esito.ToString() ;
+                        listamosse += (i + 1).ToString() + " ) : " + _risultati[i].mossa.ToString() + " " + _risultati[i].esito.ToString() ;
                     else
-                        listamosse += (i + 1).ToString() + " ) : " + item[i].mossa.ToString() + " " + item[i].esito.ToString() + " - ";
+                        listamosse += (i + 1).ToString() + " ) : " + _risultati[i].mossa.ToString() + " " + _risultati[i].esito.ToString() + " - ";
                 }
 
                 await context.PostAsync($"Ecco tue ultime mosse : " + listamosse);
