@@ -211,7 +211,7 @@ public class BasicLuisDialog : LuisDialog<object>
             context.Wait(MessageReceived);
             return;
         }
-        if (tipomossa.Entity == "carta")
+        if (tipomossa.Entity.ToLower() == "carta")
         {
             var msg = context.MakeMessage();
 
@@ -220,7 +220,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
 
         }
-        else if (tipomossa.Entity == "forbice")
+        else if (tipomossa.Entity.ToLower() == "forbice")
         {
             var msg = context.MakeMessage();
 
