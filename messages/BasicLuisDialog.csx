@@ -77,6 +77,33 @@ public class BasicLuisDialog : LuisDialog<object>
             await context.PostAsync($"Errore durante il reset ," + ex.Message);
         }
     }
+    [LuisIntent("Insult")]
+    public async Task Insult(IDialogContext context, LuisResult result)
+    {
+        
+            await context.PostAsync($"Non insultami , sono tuo amico :)");
+
+            context.Wait(MessageReceived);
+        
+    }
+    [LuisIntent("Hate")]
+    public async Task Hate(IDialogContext context, LuisResult result)
+    {
+
+        await context.PostAsync($"Provo solo provare amore per te <3 ");
+
+        context.Wait(MessageReceived);
+
+    }
+    [LuisIntent("Love")]
+    public async Task Love(IDialogContext context, LuisResult result)
+    {
+
+        await context.PostAsync($"Che dolcetto che sei, strapazzimi di coccole <3");
+
+        context.Wait(MessageReceived);
+
+    }
     [LuisIntent("Welcome")]
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
@@ -330,6 +357,16 @@ public class BasicLuisDialog : LuisDialog<object>
         {
             roundNumber = 3;
             await context.PostAsync($"Terzo round, fai la tua mossa");
+        }
+        else if (roundNumber == 3)
+        {
+            roundNumber = 4;
+            await context.PostAsync($"Quarto round, fai la tua mossa");
+        }
+        else if (roundNumber == 4)
+        {
+            roundNumber = 5;
+            await context.PostAsync($"Ultimo round, fai la tua mossa");
         }
         else
         {
