@@ -61,6 +61,9 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("Reset")]
     public async Task Reset(IDialogContext context, LuisResult result)
     {
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.TrackEvent("Reset");
+        telemetry.Flush();
         var _noresult = new System.Collections.Generic.List<HistoryMove>();
 
         try
@@ -73,22 +76,60 @@ public class BasicLuisDialog : LuisDialog<object>
         }
         catch (Exception ex)
         {
-
-            await context.PostAsync($"Errore durante il reset ," + ex.Message);
+            telemetry = new TelemetryClient();
+            telemetry.TrackException(ex);
+            telemetry.Flush();
+            // await context.PostAsync($"Errore durante il reset ," + ex.Message);
         }
+    }
+    [LuisIntent("Score")]
+    public async Task Score(IDialogContext context, LuisResult result)
+    {
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.TrackEvent("Score");
+        telemetry.Flush();
+        ScoreFight yourScore = null;
+        try
+        {
+            yourScore = context.UserData.Get<ScoreFight>("fightscore");
+
+        }
+        catch (Exception ex)
+        {
+            telemetry = new TelemetryClient();
+            telemetry.TrackException(ex);
+            telemetry.Flush();
+
+        }
+
+        if (yourScore != null && (yourScore.loseNumber != 0 || yourScore.winNumber != 0 || yourScore.equalNumber != 0))
+        {
+            await context.PostAsync($"Ecco i tuoi risultati " + yourScore.winNumber.ToString() + " vittorie, " + yourScore.loseNumber.ToString() + " sconfitte, " + yourScore.equalNumber.ToString() + " pareggi!");
+        }
+        else
+
+            await context.PostAsync($"Nessun dato presente");
+
+        context.Wait(MessageReceived);
     }
     [LuisIntent("Insult")]
     public async Task Insult(IDialogContext context, LuisResult result)
     {
-        
-            await context.PostAsync($"Non insultami , sono tuo amico :)");
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.TrackEvent("Insult");
+        telemetry.Flush();
 
-            context.Wait(MessageReceived);
-        
+        await context.PostAsync($"Non insultami , sono tuo amico :)");
+
+        context.Wait(MessageReceived);
+
     }
     [LuisIntent("Hate")]
     public async Task Hate(IDialogContext context, LuisResult result)
     {
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.TrackEvent("Hate");
+        telemetry.Flush();
 
         await context.PostAsync($"Provo solo provare amore per te <3 ");
 
@@ -98,7 +139,9 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("Love")]
     public async Task Love(IDialogContext context, LuisResult result)
     {
-
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.TrackEvent("Love");
+        telemetry.Flush();
         await context.PostAsync($"Che dolcetto che sei, strapazzimi di coccole <3");
 
         context.Wait(MessageReceived);
@@ -107,12 +150,14 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("Welcome")]
     public async Task Welcome(IDialogContext context, LuisResult result)
     {
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.TrackEvent("Welcome Game");
+        telemetry.Flush();
+
         try
         {
 
-            TelemetryClient telemetry = new TelemetryClient();
-            telemetry.TrackEvent("Welcome Game");
-            telemetry.Flush();
+          
 
             try
             {
@@ -126,6 +171,9 @@ public class BasicLuisDialog : LuisDialog<object>
             {
                 // await context.PostAsync($"Errore," + ex.Message);
 
+                telemetry = new TelemetryClient();
+                telemetry.TrackException(ex);
+                telemetry.Flush();
             }
 
 
@@ -139,8 +187,10 @@ public class BasicLuisDialog : LuisDialog<object>
             }
             catch (Exception ex)
             {
-             //  await context.PostAsync($"Errore," + ex.Message);
-
+                //  await context.PostAsync($"Errore," + ex.Message);
+                telemetry = new TelemetryClient();
+                telemetry.TrackException(ex);
+                telemetry.Flush();
             }
 
             var msg = context.MakeMessage();
@@ -150,7 +200,7 @@ public class BasicLuisDialog : LuisDialog<object>
             if (!String.IsNullOrEmpty(name))
                 await context.PostAsync($"Buongiorno," + this.name + ",  hai a disposizione due comandi regole e partita"); //
             else
-                await context.PostAsync($"Buongiorno, hai a disposizione due comandi regole e partita"); //
+                await context.PostAsync($"Buongiorno, hai a disposizione cinque comandi regole, partita , reset ( per cancellare tutti risultati delle tue partite ), interrompi ( per interrompere una partita ) e risultati"); //
 
 
             if (_hystoryMoves != null && _hystoryMoves.Count > 0)
@@ -176,12 +226,23 @@ public class BasicLuisDialog : LuisDialog<object>
 
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            telemetry = new TelemetryClient();
+            telemetry.TrackException(ex);
+            telemetry.Flush();
         }
         context.Wait(MessageReceived);
-        
+
+    }
+    [LuisIntent("Break")]
+    public async Task Break(IDialogContext context, LuisResult result)
+    {
+        TelemetryClient telemetry = new TelemetryClient();
+        telemetry.TrackEvent("Break");
+        telemetry.Flush();
+        await context.PostAsync($"Partita interotta, per iniziarne una nuova scrivi avvia partita"); //
+        context.Wait(MessageReceived);
     }
     [LuisIntent("Regole")]
     public async Task Regole(IDialogContext context, LuisResult result)
@@ -189,7 +250,7 @@ public class BasicLuisDialog : LuisDialog<object>
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Regole");
         telemetry.Flush();
-        await context.PostAsync($"Le regole sono semplici, la carta vince sul sasso, la forbice vince su carta e il sasso vince sulle forbici, per iniziare scrivi partita"); //
+        await context.PostAsync($"Le regole sono semplici, la carta vince sul sasso, la forbice vince su carta e il sasso vince sulle forbici, combatti contro la nostra macchina, per iniziare scrivi partita"); //
         context.Wait(MessageReceived);
     }
     [LuisIntent("Partita")]
@@ -198,7 +259,7 @@ public class BasicLuisDialog : LuisDialog<object>
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Partita");
         telemetry.Flush();
-        await context.PostAsync($"Iniziamo la partita che è composta da 5 round, vince chi si aggiudica il numero maggiore. Inizia scrivendo avvia partita"); //
+        await context.PostAsync($"Iniziamo la partita che è composta da 5 round, vince chi tra te e la nostra macchina si aggiudica il numero maggiore. Inizia scrivendo avvia partita"); //
         context.Wait(MessageReceived);
     }
     [LuisIntent("AvviaPartita")]
@@ -289,6 +350,9 @@ public class BasicLuisDialog : LuisDialog<object>
         {
             await context.PostAsync($"Errore nell'invocazione di AI " + ex.Message);
 
+            telemetry = new TelemetryClient();
+            telemetry.TrackException(ex);
+            telemetry.Flush();
         }
 
         var machineMsg = context.MakeMessage();
@@ -431,7 +495,9 @@ public class BasicLuisDialog : LuisDialog<object>
         }
         catch (Exception ex)
         {
-
+            telemetry = new TelemetryClient();
+            telemetry.TrackException(ex);
+            telemetry.Flush();
             await context.PostAsync($"Errore," + ex.Message);
         }
 
