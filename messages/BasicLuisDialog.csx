@@ -198,7 +198,7 @@ public class BasicLuisDialog : LuisDialog<object>
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Partita");
         telemetry.Flush();
-        await context.PostAsync($"Iniziamo la partita che è composta da 3 round, vince chi se ne aggiudica 2. Inizia scrivendo avvia partita"); //
+        await context.PostAsync($"Iniziamo la partita che è composta da 5 round, vince chi si aggiudica il numero maggiore. Inizia scrivendo avvia partita"); //
         context.Wait(MessageReceived);
     }
     [LuisIntent("AvviaPartita")]
@@ -209,7 +209,7 @@ public class BasicLuisDialog : LuisDialog<object>
         telemetry.Flush();
         startFight = true;
         roundNumber = 1;
-        await context.PostAsync($"Primo round, lancia la tua mossa ( sasso , carta o forbice ) ");
+        await context.PostAsync($"Primo round, scrivi la tua mossa ( sasso , carta o forbice ) ");
         context.Wait(MessageReceived);
     }
     [LuisIntent("Mossa")]
