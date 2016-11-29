@@ -198,9 +198,9 @@ public class BasicLuisDialog : LuisDialog<object>
             await context.PostAsync(msg);
 
             if (!String.IsNullOrEmpty(name))
-                await context.PostAsync($"Buongiorno," + this.name + ",  hai a disposizione due comandi regole e partita"); //
+                await context.PostAsync($"Buongiorno, " + this.name + ", hai a disposizione cinque comandi regole, partita , reset ( per cancellare tutti i risultati delle tue partite ), interrompi ( per interrompere una partita ) e risultati"); //
             else
-                await context.PostAsync($"Buongiorno, hai a disposizione cinque comandi regole, partita , reset ( per cancellare tutti risultati delle tue partite ), interrompi ( per interrompere una partita ) e risultati"); //
+                await context.PostAsync($"Buongiorno, hai a disposizione cinque comandi regole, partita , reset ( per cancellare tutti i risultati delle tue partite ), interrompi ( per interrompere una partita ) e risultati"); //
 
 
             if (_hystoryMoves != null && _hystoryMoves.Count > 0)
