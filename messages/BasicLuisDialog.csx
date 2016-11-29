@@ -241,11 +241,15 @@ public class BasicLuisDialog : LuisDialog<object>
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Break");
         telemetry.Flush();
+      
+        if(roundNumber > 0)
+        await context.PostAsync($"Partita interotta, per iniziarne una nuova scrivi avvia partita"); //
+        else
+            await context.PostAsync($"Non hai in corso nessuna partita, per iniziarne una scrivi avvia partita"); //
         roundNumber = 0;
         roundResult = 0;
         roundResultMachine = 0;
         startFight = false;
-        await context.PostAsync($"Partita interotta, per iniziarne una nuova scrivi avvia partita"); //
         context.Wait(MessageReceived);
     }
     [LuisIntent("Regole")]
