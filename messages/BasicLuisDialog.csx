@@ -241,6 +241,10 @@ public class BasicLuisDialog : LuisDialog<object>
         TelemetryClient telemetry = new TelemetryClient();
         telemetry.TrackEvent("Break");
         telemetry.Flush();
+        roundNumber = 0;
+        roundResult = 0;
+        roundResultMachine = 0;
+        startFight = false;
         await context.PostAsync($"Partita interotta, per iniziarne una nuova scrivi avvia partita"); //
         context.Wait(MessageReceived);
     }
