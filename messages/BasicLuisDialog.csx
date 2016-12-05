@@ -574,7 +574,7 @@ public class BasicLuisDialog : LuisDialog<object>
             var msg = context.MakeMessage();
             msg.Attachments = new List<Microsoft.Bot.Connector.Attachment>();
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_paper.png", "Hands_Human_paper.png"));
-            context.PostAsync(msg);
+            await context.PostAsync(msg);
 
 
         }
@@ -583,7 +583,7 @@ public class BasicLuisDialog : LuisDialog<object>
             var msg = context.MakeMessage();
             msg.Attachments = new List<Microsoft.Bot.Connector.Attachment>();
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_scissors.png", "Hands_Human_scissors.png"));
-            context.PostAsync(msg);
+            await context.PostAsync(msg);
 
         }
         else
@@ -591,7 +591,7 @@ public class BasicLuisDialog : LuisDialog<object>
             var msg = context.MakeMessage();
             msg.Attachments = new List<Microsoft.Bot.Connector.Attachment>();
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Human_rock.png", "Hands_Human_rock.png"));
-            context.PostAsync(msg);
+            await context.PostAsync(msg);
 
         }
 
@@ -635,9 +635,9 @@ public class BasicLuisDialog : LuisDialog<object>
         else if (resultMachine == "R")
             machineMsg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/Hands_Robot_rock.png", "Hands_Robot_rock.png"));
         else
-            context.PostAsync($"Non ho nessuna mossa : " + resultMachine);
+           await context.PostAsync($"Non ho nessuna mossa : " + resultMachine);
 
-        context.PostAsync(machineMsg);
+      await  context.PostAsync(machineMsg);
 
         if (tipomossa.ToLower() == "carta" && resultMachine == "S")
         {
