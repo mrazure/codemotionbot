@@ -294,7 +294,7 @@ public class BasicLuisDialog : LuisDialog<object>
         //await context.PostAsync($"Primo round, scrivi la tua mossa ( sasso , carta o forbice ) ");
         //context.Wait(MessageReceived);
 
-        var options = new PromptOptions<string>("Fai la tua mossa o termina la partita", null, "Devi selezionare una mossa o termina la partita", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Auto));
+        var options = new PromptOptions<string>("Fai la tua mossa o termina la partita", null, "Devi selezionare una mossa o termina la partita", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Inline));
         PromptDialog.Choice<string>(context, FaiLaTuaMossa, options);
     }
     [LuisIntent("Mossa")]
@@ -552,7 +552,7 @@ public class BasicLuisDialog : LuisDialog<object>
         startFight = true;
         roundNumber = 1;
 
-        var options = new PromptOptions<string>("Fai la tua mossa o termina la partita", null, "Devi selezionare una mossa o termina la partita", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Auto));
+        var options = new PromptOptions<string>("Fai la tua mossa o termina la partita", null, "Devi selezionare una mossa o termina la partita", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Inline));
         PromptDialog.Choice<string>(context, FaiLaTuaMossa, options);
     }
     public async Task FaiLaTuaMossa(IDialogContext context, IAwaitable<string> result)
@@ -686,7 +686,7 @@ public class BasicLuisDialog : LuisDialog<object>
         {
 
             roundNumber = 2;
-            var options = new PromptOptions<string>("Parziale " + roundResult + " a " + roundResultMachine + " ! Secondo round, fai la tua mossa o termina la partita", null, "Deve selezionare una mossa", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Auto));
+            var options = new PromptOptions<string>("Parziale " + roundResult + " a " + roundResultMachine + " ! Secondo round, fai la tua mossa o termina la partita", null, "Deve selezionare una mossa", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Inline));
             PromptDialog.Choice<string>(context, FaiLaTuaMossa, options);
             //   await context.PostAsync($"Secondo round, fai la tua mossa");
         }
@@ -694,21 +694,21 @@ public class BasicLuisDialog : LuisDialog<object>
         {
             roundNumber = 3;
             //  await context.PostAsync($"Terzo round, fai la tua mossa");
-            var options = new PromptOptions<string>("Parziale " + roundResult + " a " + roundResultMachine + " ! Terzo round, fai la tua mossa o termina la partita", null, "Deve selezionare una mossa", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Auto));
+            var options = new PromptOptions<string>("Parziale " + roundResult + " a " + roundResultMachine + " ! Terzo round, fai la tua mossa o termina la partita", null, "Deve selezionare una mossa", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Inline));
             PromptDialog.Choice<string>(context, FaiLaTuaMossa, options);
         }
         else if (roundNumber == 3)
         {
             roundNumber = 4;
             //await context.PostAsync($"Quarto round, fai la tua mossa");
-            var options = new PromptOptions<string>("Parziale " + roundResult + " a " + roundResultMachine + " ! Quarto round, fai la tua mossa o termina la partita", null, "Deve selezionare una mossa", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Auto));
+            var options = new PromptOptions<string>("Parziale " + roundResult + " a " + roundResultMachine + " ! Quarto round, fai la tua mossa o termina la partita", null, "Deve selezionare una mossa", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Inline));
             PromptDialog.Choice<string>(context, FaiLaTuaMossa, options);
         }
         else if (roundNumber == 4)
         {
             roundNumber = 5;
             //await context.PostAsync($"Ultimo round, fai la tua mossa");
-            var options = new PromptOptions<string>("Parziale " + roundResult + " a " + roundResultMachine + " ! Ultimo round, fai la tua mossa o termina la partita", null, "Deve selezionare una mossa", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Auto));
+            var options = new PromptOptions<string>("Parziale " + roundResult + " a " + roundResultMachine + " ! Ultimo round, fai la tua mossa o termina la partita", null, "Deve selezionare una mossa", new List<string>() { "sasso", "carta", "forbice", "termina" }, 3, new PromptStyler(PromptStyle.Inline));
             PromptDialog.Choice<string>(context, FaiLaTuaMossa, options);
         }
         else
@@ -766,7 +766,7 @@ public class BasicLuisDialog : LuisDialog<object>
 
             //context.Wait(MessageReceived);
 
-            var options = new PromptOptions<string>("Partita terminata, vuoi fare una nuova partita o basta?", null, "Deve selezionare una mossa", new List<string>() { "nuova partita", "basta" }, 3, new PromptStyler(PromptStyle.Auto));
+            var options = new PromptOptions<string>("Partita terminata, vuoi fare una nuova partita o basta?", null, "Deve selezionare una mossa", new List<string>() { "nuova partita", "basta" }, 3, new PromptStyler(PromptStyle.Inline));
             PromptDialog.Choice<string>(context, RiavviaPartita, options);
         }
 
