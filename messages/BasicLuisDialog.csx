@@ -209,9 +209,9 @@ public class BasicLuisDialog : LuisDialog<object>
             await context.PostAsync(msg);
 
             if (!String.IsNullOrEmpty(name))
-                await context.PostAsync($"Buongiorno, " + this.name + ",  sfida la nostra intelligenza artificiale al gioco sasso carta e forbice");
+                await context.PostAsync($"Buongiorno, " + this.name + ", gioca e sfida la nostra intelligenza artificiale al gioco sasso carta e forbice");
             else
-                await context.PostAsync($"Buongiorno,  giocare e sfida la nostra intelligenza artificiale al gioco sasso carta e forbice");
+                await context.PostAsync($"Buongiorno,  gioca e sfida la nostra intelligenza artificiale al gioco sasso carta e forbice");
 
 
             //if (_hystoryMoves != null && _hystoryMoves.Count > 0)
