@@ -208,10 +208,20 @@ public class BasicLuisDialog : LuisDialog<object>
             msg.Attachments.Add(new Microsoft.Bot.Connector.Attachment("image/png", "https://fifthelementstorage.blob.core.windows.net/bot/paper.png", "paper.png"));
             await context.PostAsync(msg);
 
+            string welcome = "Buongiorno";
+
+            if (DateTime.Now.Hour > 14)
+
+                welcome = "Buon pomeriggio";
+
+            if(DateTime.Now.Hour >=18 )
+
+                welcome = "Buonasera";
+
             if (!String.IsNullOrEmpty(name))
-                await context.PostAsync($"Buongiorno, " + this.name + ", gioca e sfida la nostra intelligenza artificiale al gioco sasso carta e forbice");
+                await context.PostAsync($""+ welcome + ", " + this.name + ", gioca e sfida la nostra intelligenza artificiale al gioco sasso carta e forbice");
             else
-                await context.PostAsync($"Buongiorno,  gioca e sfida la nostra intelligenza artificiale al gioco sasso carta e forbice");
+                await context.PostAsync($"" + welcome + ", gioca e sfida la nostra intelligenza artificiale al gioco sasso carta e forbice");
 
 
             //if (_hystoryMoves != null && _hystoryMoves.Count > 0)
